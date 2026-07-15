@@ -564,43 +564,37 @@
 
   .sound-toggle {
     position: fixed;
-    top: 22px;
-    left: 50%;
+    top: 18px;
+    right: 18px;
     z-index: 30;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 13px 26px;
-    background: var(--wine);
+    gap: 7px;
+    padding: 9px 16px;
+    background: var(--cream);
     border: 1px solid var(--gold);
-    color: var(--cream);
+    color: var(--wine);
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: 16px;
+    font-size: 14px;
     letter-spacing: 0.03em;
     border-radius: 999px;
-    box-shadow: 0 10px 26px -8px rgba(60,42,36,0.5);
+    box-shadow: 0 8px 20px -8px rgba(60,42,36,0.35);
     cursor: pointer;
     opacity: 0;
-    transform: translate(-50%, -8px);
+    transform: translateY(-8px);
     pointer-events: none;
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
   .sound-toggle.visible {
     opacity: 1;
-    transform: translate(-50%, 0);
+    transform: translateY(0);
     pointer-events: auto;
-    animation: soundPulse 1.8s ease-in-out infinite;
   }
   .sound-toggle.hidden-toggle {
     opacity: 0;
-    transform: translate(-50%, -8px);
+    transform: translateY(-8px);
     pointer-events: none;
-    animation: none;
-  }
-  @keyframes soundPulse {
-    0%, 100% { box-shadow: 0 10px 26px -8px rgba(60,42,36,0.5), 0 0 0 0 rgba(126,47,65,0.45); }
-    50% { box-shadow: 0 10px 26px -8px rgba(60,42,36,0.5), 0 0 0 10px rgba(126,47,65,0); }
   }
 
   .opening p {
@@ -687,7 +681,7 @@
 
     <div id="yt-embed"></div>
 
-    <button id="soundToggle" class="sound-toggle">🔊&nbsp; tap to play our song</button>
+    <button id="soundToggle" class="sound-toggle">🔈&nbsp; tap for sound</button>
 
     <div id="envelopeWrap">
       <div class="envelope">
@@ -989,10 +983,11 @@
 
     if (!ytHolder.dataset.loaded) {
       ytHolder.dataset.loaded = 'true';
-      // Start muted — this is the only approach that reliably plays on every
-      // browser/device (iOS Safari in particular blocks unmuted iframe
-      // autoplay even from a real tap). We prompt for one more tap to unmute.
-      loadSong(true);
+      // Real HTTPS page + genuine click = browsers are much more willing
+      // to allow sound right away. Try unmuted first.
+      loadSong(false);
+      // Quiet fallback only — stays small/out of the way in case a
+      // particular browser still blocks it.
       soundToggle.classList.add('visible');
     }
 
@@ -1051,7 +1046,7 @@
   showSlide(0);
 
   // falling hearts
-  const heartSVG = '❤';
+  const heartSVG = '\u2764\uFE0E';
   for (let i = 0; i < 18; i++) {
     const h = document.createElement('div');
     h.className = 'heart';
