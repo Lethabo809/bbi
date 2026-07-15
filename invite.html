@@ -681,7 +681,7 @@
 
     <div id="yt-embed"></div>
 
-    <button id="soundToggle" class="sound-toggle">🔈&nbsp; tap for sound</button>
+
 
     <div id="envelopeWrap">
       <div class="envelope">
@@ -878,7 +878,6 @@
   const ytHolder = document.getElementById('yt-embed');
 
   const YT_VIDEO_ID = 'WpyfrixXBqU';
-  const soundToggle = document.getElementById('soundToggle');
 
   function buildSrc(muted, startSeconds){
     return 'https://www.youtube.com/embed/' + YT_VIDEO_ID +
@@ -983,12 +982,7 @@
 
     if (!ytHolder.dataset.loaded) {
       ytHolder.dataset.loaded = 'true';
-      // Real HTTPS page + genuine click = browsers are much more willing
-      // to allow sound right away. Try unmuted first.
       loadSong(false);
-      // Quiet fallback only — stays small/out of the way in case a
-      // particular browser still blocks it.
-      soundToggle.classList.add('visible');
     }
 
     setTimeout(() => {
@@ -997,13 +991,6 @@
       runTypewriter();
     }, 550);
   }
-
-  soundToggle.addEventListener('click', () => {
-    const oldIframe = document.getElementById('yt-iframe');
-    if (oldIframe) oldIframe.remove();
-    loadSong(false);
-    soundToggle.classList.add('hidden-toggle');
-  });
 
   openBtn.addEventListener('click', openCard);
   wrap.addEventListener('click', openCard);
