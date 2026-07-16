@@ -157,6 +157,24 @@
     opacity: 0.55;
   }
 
+  .volume-note {
+    position: absolute;
+    top: 68%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-2deg);
+    z-index: 2;
+    font-family: 'Dancing Script', cursive;
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--wine);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.7s ease;
+  }
+  .volume-note.show {
+    opacity: 0.85;
+  }
+
   /* ================= CARD ================= */
   #cardWrap {
     position: absolute;
@@ -529,39 +547,6 @@
   .divider .line { height: 1px; width: 60px; background: var(--gold); opacity: 0.7; }
   .divider .mark { color: var(--gold); font-size: 14px; }
 
-  /* our song */
-  .song {
-    margin: 0 0 32px;
-    padding: 16px 18px;
-    background: var(--rose-soft);
-    border-left: 3px solid var(--wine);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .song-label {
-    font-size: 12px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--wine);
-    opacity: 0.8;
-    text-align: center;
-  }
-  .song iframe {
-    border-radius: 8px;
-    border: none;
-    width: 100%;
-  }
-
-  #yt-embed {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    opacity: 0;
-    pointer-events: none;
-  }
-
   .sound-toggle {
     position: fixed;
     top: 18px;
@@ -679,13 +664,13 @@
 
   <div class="stage">
 
-    <div id="yt-embed"></div>
-
-
+    <!-- Background song: replace song.mp3 with your uploaded file's exact name/path -->
+    <audio id="bgSong" src="song.mp3" preload="auto" loop></audio>
 
     <div id="envelopeWrap">
       <div class="envelope">
         <div class="flap"></div>
+        <div class="volume-note" id="volumeNote">please increase your volume &hearts;</div>
         <div class="seal" id="openBtn">Open<br>Me</div>
         <div class="env-caption">for my love, on his 25th</div>
       </div>
@@ -890,25 +875,16 @@
   const wrap = document.getElementById('envelopeWrap');
   const openBtn = document.getElementById('openBtn');
   const cardWrap = document.getElementById('cardWrap');
-  const ytHolder = document.getElementById('yt-embed');
+  const volumeNoteEl = document.getElementById('volumeNote');
 
-  const YT_VIDEO_ID = 'WpyfrixXBqU';
-
-  function buildSrc(muted, startSeconds){
-    return 'https://www.youtube.com/embed/' + YT_VIDEO_ID +
-      '?autoplay=1&mute=' + (muted ? 1 : 0) +
-      '&playsinline=1&rel=0&controls=0&start=' + Math.max(0, Math.floor(startSeconds || 0));
-  }
-
-  function loadSong(muted){
-    const iframe = document.createElement('iframe');
-    iframe.id = 'yt-iframe';
-    iframe.width = '100%';
-    iframe.height = '100%';
-    iframe.style.border = '0';
-    iframe.allow = 'autoplay; encrypted-media';
-    iframe.src = buildSrc(muted, 0);
-    ytHolder.appendChild(iframe);
+  // ---------- song (plays once the "Happy 25th, My Love" title finishes writing itself) ----------
+  function loadSong(){
+    const audio = document.getElementById('bgSong');
+    audio.volume = 1;
+    audio.play().catch(() => {
+      // if the browser blocks autoplay with sound, start it on the next tap anywhere
+      document.body.addEventListener('click', () => audio.play(), { once: true });
+    });
   }
 
   // ---------- sequential "writing itself" reveal ----------
@@ -979,6 +955,10 @@
                           typePetalEls.forEach((p, idx) => {
                             setTimeout(() => p.classList.add('show'), idx * 220);
                           });
+                          // 7. song starts right as the title finishes revealing itself
+                          setTimeout(() => {
+                            loadSong();
+                          }, typePetalEls.length * 220 + 500);
                         });
                       });
                     }, 300);
@@ -1010,16 +990,18 @@
   function openCard(){
     wrap.classList.add('open');
 
-    if (!ytHolder.dataset.loaded) {
-      ytHolder.dataset.loaded = 'true';
-      loadSong(false);
-    }
+    // flap takes 900ms to fully open — reveal the note just after
+    setTimeout(() => {
+      volumeNoteEl.classList.add('show');
+    }, 950);
 
+    // hold the note on screen for a moment so it can actually be read,
+    // then move on to the card
     setTimeout(() => {
       wrap.classList.add('hidden');
       cardWrap.classList.add('show');
       runTypewriter();
-    }, 550);
+    }, 2600);
   }
 
   openBtn.addEventListener('click', openCard);
