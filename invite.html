@@ -664,8 +664,8 @@
 
   <div class="stage">
 
-    <!-- Background song: replace song.mp3 with your uploaded file's exact name/path -->
-    <audio id="bgSong" src="song.mp3" preload="auto" loop></audio>
+    <!-- Background song: file must be named exactly "song.mp3" and sit next to invite.html -->
+    <audio id="bgSong" src="song.mp3" preload="auto" loop playsinline></audio>
 
     <div id="envelopeWrap">
       <div class="envelope">
@@ -745,8 +745,8 @@
             </div>
           </div>
 
-          <!-- SLIDE 3: Friday -->
-          <div class="slide" data-slide="3">
+          <!-- SLIDE 4: Friday -->
+          <div class="slide" data-slide="4">
             <div class="event-slide">
               <div class="event-day">Friday</div>
               <div class="event-title">First Stop: Being Young And Free</div>
@@ -755,8 +755,8 @@
             </div>
           </div>
 
-          <!-- SLIDE 4: Saturday — Breakfast -->
-          <div class="slide" data-slide="4">
+          <!-- SLIDE 5: Saturday — Breakfast -->
+          <div class="slide" data-slide="5">
             <div class="event-slide">
               <div class="event-day">Saturday</div>
               <div class="event-title">Birthday Breakfast, For The One Man I Love</div>
@@ -765,8 +765,8 @@
             </div>
           </div>
 
-          <!-- SLIDE 5: Saturday — Dome -->
-          <div class="slide" data-slide="5">
+          <!-- SLIDE 6: Saturday — Dome -->
+          <div class="slide" data-slide="6">
             <div class="event-slide">
               <div class="event-day">Saturday</div>
               <div class="event-title">A Little Adventure, Just Us Two</div>
@@ -775,8 +775,8 @@
             </div>
           </div>
 
-          <!-- SLIDE 6: Saturday — Spa -->
-          <div class="slide" data-slide="6">
+          <!-- SLIDE 7: Saturday — Spa -->
+          <div class="slide" data-slide="7">
             <div class="event-slide">
               <div class="event-day">Saturday</div>
               <div class="event-title">Time To Just Breathe</div>
@@ -785,8 +785,8 @@
             </div>
           </div>
 
-          <!-- SLIDE 7: Saturday — Dinner -->
-          <div class="slide" data-slide="7">
+          <!-- SLIDE 8: Saturday — Dinner -->
+          <div class="slide" data-slide="8">
             <div class="event-slide">
               <div class="event-day">Saturday</div>
               <div class="event-title">Dinner, Just The Two Of Us</div>
@@ -795,8 +795,8 @@
             </div>
           </div>
 
-          <!-- SLIDE 8: Sunday -->
-          <div class="slide" data-slide="8">
+          <!-- SLIDE 9: Sunday -->
+          <div class="slide" data-slide="9">
             <div class="event-slide">
               <div class="event-day">Sunday</div>
               <div class="event-title">Permanent Love</div>
@@ -804,8 +804,8 @@
             </div>
           </div>
 
-          <!-- SLIDE 9: What to bring -->
-          <div class="slide" data-slide="9">
+          <!-- SLIDE 10: What to bring -->
+          <div class="slide" data-slide="10">
             <div class="heading-slide" style="min-height: auto; margin-bottom: 24px;">
               <div class="eyebrow-lg" style="font-size: 24px;">What To Bring</div>
             </div>
@@ -821,23 +821,23 @@
             </div>
           </div>
 
-          <!-- SLIDE 10: You just show up -->
-          <div class="slide" data-slide="10">
+          <!-- SLIDE 11: You just show up -->
+          <div class="slide" data-slide="11">
             <div class="heading-slide">
               <div class="eyebrow-lg">You Just Show Up.<br>I&rsquo;ll Handle The Rest.</div>
               <div class="mark-lg">✦</div>
             </div>
           </div>
 
-          <!-- SLIDE 11: You've spent years showing up -->
-          <div class="slide" data-slide="11">
+          <!-- SLIDE 12: You've spent years showing up -->
+          <div class="slide" data-slide="12">
             <div class="closing">
               <p>You&rsquo;ve spent years showing up for me, taking care of everyone else, never asking for much in return. This weekend is just for you &mdash; planned with everything I have, because you deserve so much more than you&rsquo;ll ever ask for.</p>
             </div>
           </div>
 
-          <!-- SLIDE 12: The deep message -->
-          <div class="slide" data-slide="12">
+          <!-- SLIDE 13: The deep message -->
+          <div class="slide" data-slide="13">
             <div class="closing">
               <p>Six years ago I didn&rsquo;t know I was signing up for this &mdash; for watching someone become who they were always meant to be, one hard year at a time, and somehow getting to call that person mine. I didn&rsquo;t know love could feel like this. Not just butterflies, not just comfort &mdash; but this quiet, steady thing that just keeps getting heavier in the best way, year after year, like it&rsquo;s putting down roots.</p>
               <p>I remember who you were when we met. Young, hungry, a little unsure, figuring out what kind of man you wanted to be. And I have sat front row for every version of you since &mdash; from you studying while on the phone with me at uni, to getting your first job, to getting your first ever apartment, to getting a car, to passing your admission, to growing into your career. I watched you become someone I am in awe of, and I never once had to imagine it. I lived it, beside you, every single time.</p>
@@ -847,8 +847,8 @@
             </div>
           </div>
 
-          <!-- SLIDE 13: Final typewriter -->
-          <div class="slide" data-slide="13">
+          <!-- SLIDE 14: Final typewriter -->
+          <div class="slide" data-slide="14">
             <div class="type-wrap" style="min-height: 220px;">
               <h1 class="type-title" id="finalTypeTitle"><span id="finalTypeText"></span><span class="cursor" id="finalTypeCursor">&nbsp;</span></h1>
               <div class="signoff" id="finalSignoff" style="opacity: 0; transition: opacity 1s ease;">
@@ -876,14 +876,19 @@
   const openBtn = document.getElementById('openBtn');
   const cardWrap = document.getElementById('cardWrap');
   const volumeNoteEl = document.getElementById('volumeNote');
+  const bgSong = document.getElementById('bgSong');
 
-  // ---------- song (plays once the "Happy 25th, My Love" title finishes writing itself) ----------
-  function loadSong(){
-    const audio = document.getElementById('bgSong');
-    audio.volume = 1;
-    audio.play().catch(() => {
-      // if the browser blocks autoplay with sound, start it on the next tap anywhere
-      document.body.addEventListener('click', () => audio.play(), { once: true });
+  // ---------- song ----------
+  // Called directly inside the click handler (openCard), NOT after any
+  // animation delay. Browsers only allow audio-with-sound to start when it's
+  // triggered synchronously by a real user gesture — waiting even a couple
+  // seconds after the tap causes them to silently block it.
+  function startSong(){
+    bgSong.volume = 1;
+    bgSong.play().catch(() => {
+      // extremely rare fallback: if it's still blocked, the very next tap
+      // anywhere on the page will start it.
+      document.body.addEventListener('click', () => bgSong.play(), { once: true });
     });
   }
 
@@ -955,10 +960,6 @@
                           typePetalEls.forEach((p, idx) => {
                             setTimeout(() => p.classList.add('show'), idx * 220);
                           });
-                          // 7. song starts right as the title finishes revealing itself
-                          setTimeout(() => {
-                            loadSong();
-                          }, typePetalEls.length * 220 + 500);
                         });
                       });
                     }, 300);
@@ -989,6 +990,10 @@
 
   function openCard(){
     wrap.classList.add('open');
+
+    // Start the song immediately — this call is still directly inside the
+    // click handler, which is what browsers require to allow sound.
+    startSong();
 
     // flap takes 900ms to fully open — reveal the note just after
     setTimeout(() => {
