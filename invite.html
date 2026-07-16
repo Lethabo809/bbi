@@ -657,7 +657,7 @@
   .closing p { font-size: 19px; line-height: 1.8; margin: 0 0 16px; text-align: center; }
 
   .signoff { text-align: center; margin-top: 26px; }
-  .signoff .love { font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.65; margin-bottom: 4px; }
+  .signoff .love { font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); opacity: 0.9; margin-bottom: 4px; }
   .signoff .name { font-family: 'Dancing Script', cursive; font-size: 32px; color: var(--wine); }
 
   .years-label { text-align: center; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.55; margin-bottom: 8px; }
@@ -764,9 +764,9 @@
           <div class="slide" data-slide="3">
             <div class="event-slide">
               <div class="event-day">Friday</div>
-              <div class="event-title">First Stop: Obsession</div>
-              <div class="event-venue">After work, till late &middot; Montecasino</div>
-              <div class="event-meta">Surprisingly, we&rsquo;ve never been to bowling together &mdash; and Montecasino is the perfect place to start. Allow me to show you why I&rsquo;m so obsessed with this place My Love.</div>
+              <div class="event-title">First Stop: Being Young And Free</div>
+              <div class="event-venue">After work, till late &middot; Monte Casino</div>
+              <div class="event-meta">Surprisingly, we&rsquo;ve never been bowling together &mdash; and Monte Casino is the perfect place to start. Allow me to show you why I&rsquo;m so obsessed with this place, My Love.</div>
             </div>
           </div>
 
@@ -776,7 +776,7 @@
               <div class="event-day">Saturday</div>
               <div class="event-title">Birthday Breakfast, For The One Man I Love</div>
               <div class="event-venue">09:30 &ndash; 11:00 &middot; Doppio Bistro, Rosebank</div>
-              <div class="event-meta">Rise and shine, &mdash; because a man turning 25 deserves a proper breakfast before I drag him around all day.</div>
+              <div class="event-meta">Rise and shine, birthday boy &mdash; because a man turning 25 deserves a proper breakfast before I drag him around all day.</div>
             </div>
           </div>
 
@@ -827,7 +827,7 @@
             <div class="bring-list">
               <div class="bring-item">
                 <div class="bring-day">Friday</div>
-                <div class="bring-desc">Your normal, comfortable work outfit.</div>
+                <div class="bring-desc">Your comfortable, casual Friday work outfit.</div>
               </div>
               <div class="bring-item">
                 <div class="bring-day">Saturday</div>
@@ -844,17 +844,32 @@
             </div>
           </div>
 
-          <!-- SLIDE 11: Closing -->
+          <!-- SLIDE 11: You've spent years showing up -->
           <div class="slide" data-slide="11">
             <div class="closing">
               <p>You&rsquo;ve spent years showing up for me, taking care of everyone else, never asking for much in return. This weekend is just for you &mdash; planned with everything I have, because you deserve so much more than you&rsquo;ll ever ask for.</p>
-              <p>Here&rsquo;s to 25, to us, and to Manchester one day &mdash; I promise. I love you more than any card could ever hold.</p>
-              <p class="lede">Happy Birthday, my love.</p>
             </div>
+          </div>
 
-            <div class="signoff">
-              <div class="love">all my love,</div>
-              <div class="name">Lethabo</div>
+          <!-- SLIDE 12: The deep message -->
+          <div class="slide" data-slide="12">
+            <div class="closing">
+              <p>Six years ago I didn&rsquo;t know I was signing up for this &mdash; for watching someone become who they were always meant to be, one hard year at a time, and somehow getting to call that person mine. I didn&rsquo;t know love could feel like this. Not just butterflies, not just comfort &mdash; but this quiet, steady thing that just keeps getting heavier in the best way, year after year, like it&rsquo;s putting down roots.</p>
+              <p>I remember who you were when we met. Young, hungry, a little unsure, figuring out what kind of man you wanted to be. And I have sat front row for every version of you since &mdash; from you studying while on the phone with me at uni, to getting your first job, to getting your first ever apartment, to getting a car, to passing your admission, to growing into your career. I watched you become someone I am in awe of, and I never once had to imagine it. I lived it, beside you, every single time.</p>
+              <p>There is nothing about these six years I would trade. Not the hard parts, not the distance some days, not the growing pains &mdash; because all of it built us into this.</p>
+              <p>I am so proud of you it sometimes catches in my chest before I can even say it out loud. You are my home before you are anything else. Cheers to random Tuesday wine, our night outs, watching shows together, cooking together, arguing like siblings over the smallest things, you fetching me at random times just because &mdash; because wherever life puts me, I choose to be here, every single day.</p>
+              <p class="lede">Happy Birthday, best friend &mdash; you are my entire heart.</p>
+            </div>
+          </div>
+
+          <!-- SLIDE 13: Final typewriter -->
+          <div class="slide" data-slide="13">
+            <div class="type-wrap" style="min-height: 220px;">
+              <h1 class="type-title" id="finalTypeTitle"><span id="finalTypeText"></span><span class="cursor" id="finalTypeCursor">&nbsp;</span></h1>
+              <div class="signoff" id="finalSignoff" style="opacity: 0; transition: opacity 1s ease;">
+                <div class="love">all my love,</div>
+                <div class="name">Lethabo</div>
+              </div>
             </div>
           </div>
 
@@ -977,6 +992,21 @@
     });
   }
 
+  const finalTypeTextEl = document.getElementById('finalTypeText');
+  const finalSignoffEl = document.getElementById('finalSignoff');
+  const FINAL_TEXT = 'I love you with all my heart.';
+  let finalTypewriterStarted = false;
+
+  function runFinalTypewriter(){
+    if (finalTypewriterStarted) return;
+    finalTypewriterStarted = true;
+    typeText(finalTypeTextEl, FINAL_TEXT, 75, () => {
+      setTimeout(() => {
+        finalSignoffEl.style.opacity = '1';
+      }, 500);
+    });
+  }
+
   function openCard(){
     wrap.classList.add('open');
 
@@ -1018,6 +1048,10 @@
     // scroll the card back to top on each slide change
     const cardEl = document.querySelector('.card');
     if (cardEl) cardEl.scrollTop = 0;
+
+    if (i === slideEls.length - 1) {
+      runFinalTypewriter();
+    }
   }
 
   prevBtn.addEventListener('click', () => {
