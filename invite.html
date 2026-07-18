@@ -879,23 +879,19 @@
   const bgSong = document.getElementById('bgSong');
 
   // ---------- song ----------
-  // We START playback muted, right inside the click handler — this is what
-  // satisfies the browser's autoplay rule. Then once the title finishes
-  // typing itself out, we simply unmute the already-playing track — that
-  // doesn't need a fresh tap, so the music can still "arrive" right as the
-  // title appears, without risking the whole thing getting blocked.
-  function startSongMuted(){
-    bgSong.muted = true;
+  // Play with sound directly inside the click handler. This is the version
+  // that actually worked reliably — trying to start muted and unmute later
+  // (to sync with the title finishing) turned out to be unreliable, since
+  // some browsers block programmatic unmuting the same way they block
+  // starting audio, unless it's tied to a fresh tap. Simple and consistent
+  // beats being clever here.
+  function startSong(){
     bgSong.volume = 1;
     bgSong.play().catch(() => {
-      // extremely rare fallback: if even muted playback is blocked, the
-      // very next tap anywhere on the page will start it.
+      // extremely rare fallback: if it's still blocked, the very next tap
+      // anywhere on the page will start it.
       document.body.addEventListener('click', () => bgSong.play(), { once: true });
     });
-  }
-
-  function unmuteSong(){
-    bgSong.muted = false;
   }
 
   // ---------- sequential "writing itself" reveal ----------
@@ -955,8 +951,6 @@
             // 3. title writes itself
             setTimeout(() => {
               typeText(typeTextEl, TITLE_TEXT, 65, () => {
-                // song becomes audible right as the title finishes
-                unmuteSong();
                 // 4. subtitle writes itself
                 setTimeout(() => {
                   typeText(typeSubTextEl, SUB_TEXT, 45, () => {
@@ -999,15 +993,20 @@
   function openCard(){
     wrap.classList.add('open');
 
-    // Start the song immediately, muted — this call is still directly
-    // inside the click handler, which is what browsers require to allow
-    // playback at all. It becomes audible later, once the title finishes
-    // typing (see unmuteSong() in runTypewriter).
-    startSongMuted();
-
     // flap takes 900ms to fully open — reveal the note just after
     setTimeout(() => {
       volumeNoteEl.classList.add('show');
+
+      // Song starts 5 seconds after the note appears, as requested.
+      // Heads up: this is a real gamble — by this point it's roughly 6
+      // seconds after his actual tap, and some browsers silently block
+      // audio that starts that long after the original click (this is
+      // exactly the bug we fixed earlier by starting it immediately).
+      // Test this live before send day — if it stays silent, the fix is
+      // moving this trigger earlier, closer to the tap itself.
+      setTimeout(() => {
+        startSong();
+      }, 5000);
     }, 950);
 
     // hold the note on screen for a moment so it can actually be read,
