@@ -1082,6 +1082,72 @@
     });
   }
 
+  // ---------- final photo + song reveal ----------
+  // EDIT THESE: paste the actual lyric lines and roughly how many seconds
+  // into the song each one should appear. This runs on its own timer once
+  // he taps play — it is NOT reading the actual Apple Music playback
+  // position (that's not something we can access from an embedded player),
+  // so it's only as accurate as the timestamps you put here. Listen to the
+  // song once with a stopwatch/phone timer to estimate them.
+  const LYRICS = [
+    { time: 0,  text: 'PASTE LYRIC LINE 1 HERE' },
+    { time: 5,  text: 'PASTE LYRIC LINE 2 HERE' },
+    { time: 10, text: 'PASTE LYRIC LINE 3 HERE' },
+    { time: 15, text: 'PASTE LYRIC LINE 4 HERE' },
+    { time: 20, text: 'PASTE LYRIC LINE 5 HERE' },
+  ];
+  const APPLE_EMBED_SRC = 'https://embed.music.apple.com/za/album/those-eyes-feat-zeph-single/1721465743';
+
+  const photoPlayBtn = document.getElementById('photoPlayBtn');
+  const usPhotoEl = document.getElementById('usPhoto');
+  const appleEmbedWrap = document.getElementById('appleEmbedWrap');
+  const appleEmbedFrame = document.getElementById('appleEmbedFrame');
+  const lyricCaptionEl = document.getElementById('lyricCaption');
+  let photoRevealStarted = false;
+  let lyricTimer = null;
+
+  function startPhotoReveal(){
+    if (photoRevealStarted) return;
+    photoRevealStarted = true;
+
+    // stop the first song (belt-and-suspenders — showSlide() already
+    // pauses it the moment this slide is reached)
+    bgSong.pause();
+
+    // unblur the photo
+    usPhotoEl.classList.add('clear');
+    photoPlayBtn.classList.add('hide');
+
+    // reveal + load the Apple Music embed (lazy-loaded so it doesn't
+    // start until he actually taps play)
+    appleEmbedFrame.src = APPLE_EMBED_SRC;
+    appleEmbedWrap.classList.add('show');
+
+    // run the lyric captions on our own timer
+    const startedAt = Date.now();
+    let lastShown = -1;
+    lyricTimer = setInterval(() => {
+      const elapsed = (Date.now() - startedAt) / 1000;
+      let activeIndex = -1;
+      for (let i = 0; i < LYRICS.length; i++) {
+        if (elapsed >= LYRICS[i].time) activeIndex = i;
+      }
+      if (activeIndex !== lastShown && activeIndex >= 0) {
+        lastShown = activeIndex;
+        lyricCaptionEl.classList.remove('show');
+        setTimeout(() => {
+          lyricCaptionEl.textContent = LYRICS[activeIndex].text;
+          lyricCaptionEl.classList.add('show');
+        }, 300);
+      }
+      if (activeIndex >= LYRICS.length - 1) {
+        clearInterval(lyricTimer);
+      }
+    }, 300);
+  }
+
+  photoPlayBtn.addEventListener('click', startPhotoReveal);
+
   function openCard(){
     wrap.classList.add('open');
 
@@ -1131,8 +1197,13 @@
     const cardEl = document.querySelector('.card');
     if (cardEl) cardEl.scrollTop = 0;
 
-    if (i === slideEls.length - 1) {
+    const activeSlide = slideEls[i];
+    if (activeSlide && activeSlide.id === 'finalTypeSlide') {
       runFinalTypewriter();
+    }
+    if (activeSlide && activeSlide.id === 'photoSlide') {
+      // first song stops automatically the moment this slide is reached
+      bgSong.pause();
     }
   }
 
