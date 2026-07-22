@@ -711,21 +711,23 @@
     left: 0;
     right: 0;
     bottom: 0;
+    top: 40%;
     z-index: 3;
-    min-height: 2.4em;
     display: flex;
     align-items: flex-end;
     justify-content: center;
     font-family: 'Playfair Display', serif;
     font-style: italic;
     color: #FFF7EC;
-    font-size: 16px;
-    line-height: 1.4;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.55);
+    font-size: 14.5px;
+    line-height: 1.6;
+    text-align: center;
+    white-space: pre-line;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.6);
     opacity: 0;
-    transition: opacity 0.6s ease;
-    padding: 34px 16px 16px;
-    background: linear-gradient(to top, rgba(20,10,10,0.72) 10%, rgba(20,10,10,0.35) 55%, transparent 100%);
+    transition: opacity 0.9s ease;
+    padding: 30px 18px 20px;
+    background: linear-gradient(to top, rgba(15,8,8,0.82) 30%, rgba(15,8,8,0.45) 65%, transparent 100%);
   }
   .lyric-caption.show { opacity: 1; }
 
@@ -1071,37 +1073,28 @@
   }
 
   // ---------- final photo + song reveal ----------
-  // EDIT THESE: paste the actual lyric lines and roughly how many seconds
-  // into the song each one should appear. This runs on its own timer once
-  // he taps play. It reads the real playback position of finalSong below,
-  // so once the timestamps here match the actual lyric moments, the
-  // captions will stay in sync with the song as it plays.
-  const LYRICS = [
-    { time: 0,   text: 'PASTE LINE 1 HERE' },
-    { time: 8,   text: 'PASTE LINE 2 HERE' },
-    { time: 16,  text: 'PASTE LINE 3 HERE' },
-    { time: 24,  text: 'PASTE LINE 4 HERE' },
-    { time: 32,  text: 'PASTE LINE 5 HERE' },
-    { time: 40,  text: 'PASTE LINE 6 HERE' },
-    { time: 48,  text: 'PASTE LINE 7 HERE' },
-    { time: 56,  text: 'PASTE LINE 8 HERE' },
-    { time: 64,  text: 'PASTE LINE 9 HERE (chorus)' },
-    { time: 72,  text: 'PASTE LINE 10 HERE (chorus)' },
-    { time: 80,  text: 'PASTE LINE 11 HERE (chorus)' },
-    { time: 88,  text: 'PASTE LINE 12 HERE (chorus)' },
-    { time: 96,  text: 'PASTE LINE 13 HERE (chorus)' },
-    { time: 104, text: 'PASTE LINE 14 HERE' },
-    { time: 112, text: 'PASTE LINE 15 HERE' },
-    { time: 120, text: 'PASTE LINE 16 HERE' },
-    { time: 128, text: 'PASTE LINE 17 HERE' },
-  ];
+  // EDIT THIS: paste the lyric paragraph you want shown over the photo.
+  // It's a single static block of text — no timing needed, it just fades
+  // in once the photo unblurs and stays up for the whole song.
+  const LYRIC_TEXT = `When we're out in a crowd, laughing loud
+And nobody knows why
+When we're lost at a club, getting drunk
+And you give me that smile
+Going home in the back of a car
+And your hand touches mine
+When we're done making love and you look up
+And give me those eyes
+
+'Cause all of the small things that you do
+Are what remind me why I fell for you
+And when we're apart and I'm missing you
+I close my eyes and all I see is you`;
 
   const finalSong = document.getElementById('finalSong');
   const photoPlayBtn = document.getElementById('photoPlayBtn');
   const usPhotoEl = document.getElementById('usPhoto');
   const lyricCaptionEl = document.getElementById('lyricCaption');
   let photoRevealStarted = false;
-  let lyricTimer = null;
 
   function startPhotoReveal(){
     if (photoRevealStarted) return;
@@ -1124,26 +1117,11 @@
     usPhotoEl.classList.add('clear');
     photoPlayBtn.classList.add('hide');
 
-    // sync lyric captions to the real song's playback position
-    let lastShown = -1;
-    lyricTimer = setInterval(() => {
-      const elapsed = finalSong.currentTime;
-      let activeIndex = -1;
-      for (let i = 0; i < LYRICS.length; i++) {
-        if (elapsed >= LYRICS[i].time) activeIndex = i;
-      }
-      if (activeIndex !== lastShown && activeIndex >= 0) {
-        lastShown = activeIndex;
-        lyricCaptionEl.classList.remove('show');
-        setTimeout(() => {
-          lyricCaptionEl.textContent = LYRICS[activeIndex].text;
-          lyricCaptionEl.classList.add('show');
-        }, 300);
-      }
-      if (activeIndex >= LYRICS.length - 1) {
-        clearInterval(lyricTimer);
-      }
-    }, 250);
+    // fade the lyric paragraph in once the photo has had a moment to clear
+    setTimeout(() => {
+      lyricCaptionEl.textContent = LYRIC_TEXT;
+      lyricCaptionEl.classList.add('show');
+    }, 900);
   }
 
   photoPlayBtn.addEventListener('click', startPhotoReveal);
